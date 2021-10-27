@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "aws-sdk": "^2.1015.0",
+    "uuid": "^8.3.2",
+    "yauzl": "^2.10.0"
+  },
+  "name": "lambda-zip-extractor",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "zip": "zip -r9 lambda ."
+  },
+  "keywords": [
+    "AWS",
+    "serverless",
+    "AWS Lambda",
+    "AWS S3",
+    "Zip",
+    "Unzip"
+  ],
+  "author": "Ankan Bag",
+  "license": "MIT",
+  "description": "This is a lambda function to extract zip files from and back to s3 bucket"
+}
