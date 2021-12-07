@@ -3,7 +3,7 @@
 This is a lambda function to extract zip files from and back to s3 bucket.
 
 ## How to use the function
-- Clone this repository, then compress the files into a zip file.
+- Clone this repository, run `npm install` then compress all the files into a zip file.
 - Go to **AWS console** visit the lambda functions section and then create a new lambda function.
 - Give a name to the Lambda Function and make sure the correct permissions are set to access the **S3 and CloudWatch services**. CloudWatch services are required to monitor the lambda function.
 - Create the Function.
@@ -15,4 +15,4 @@ This is a lambda function to extract zip files from and back to s3 bucket.
 
 The detailed guide is available in a [medium article](https://aws.plainenglish.io/extract-zip-files-from-and-back-to-the-s3-bucket-using-node-js-f19f009ace22).
 
-Don't forget to configure the lambda function as per your need.
+Don't forget to configure the lambda function as per your need!
