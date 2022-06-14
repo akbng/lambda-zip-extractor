@@ -1,14 +1,16 @@
 const AWS = require("aws-sdk");
 const stream = require("stream");
 const yauzl = require("yauzl");
+const mime = require('mime-types');
+
 const { v4: uuidv4 } = require("uuid");
 
-const uploadStream = ({ Bucket, Key }) => {
+const uploadStream = ({ Bucket, Key, ContentType }) => {
   const s3 = new AWS.S3();
   const pass = new stream.PassThrough();
   return {
     writeStream: pass,
-    promise: s3.upload({ Bucket, Key, Body: pass }).promise(),
+    promise: s3.upload({ Bucket, Key, Body: pass, ContentType}).promise(),
   };
 };
 
@@ -27,15 +29,16 @@ const extractZip = (Bucket, buffer) => {
           zipfile.openReadStream(entry, function (err, readStream) {
             if (err) reject(err);
             const fileNames = entry.fileName.split(".");
+
+            //adding the mime type for the created file.
             const { writeStream, promise } = uploadStream({
               Bucket,
-              Key: `${fileNames[0]}.${uuidv4()}.${
-                fileNames[fileNames.length - 1]
-              }`,
+              Key: entry.fileName,
+              ContentType: mime.lookup(entry.fileName)
             });
+           
             readStream.pipe(writeStream);
             promise.then(() => {
-              console.log(entry.fileName + " Uploaded successfully!");
               zipfile.readEntry();
             });
           });
@@ -60,6 +63,19 @@ exports.handler = async (event) => {
   try {
     const object = await s3.getObject(params).promise();
     const result = await extractZip(Bucket, object.Body);
+
+    console.log("Zip file successfully extracted.");
+    
+    //deleting the original zip file.
+    await s3.headObject(params).promise()
+    console.log("File Found in S3")
+    try {
+        await s3.deleteObject(params).promise()
+        console.log("file deleted Successfully")
+    }
+    catch (err) {
+         console.log("ERROR in file Deleting : " + JSON.stringify(err))
+    }
 
     return {
       status: result && 200,
